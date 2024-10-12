@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JpaBuddyIdeaProjectConfig" newRepositoryParent="org.springframework.data.jpa.repository.JpaRepository">
+    <option name="reLastEntityCreationPackage" value="src/main/java/com/system/fsharksocialmedia/entities" />
+    <option name="reverseEngineeringLastDbConnectionId" value="fdfe1a81-67b5-42e5-8d5e-f0c2b1927c68" />
+  </component>
+  <component name="JpaPluginProjectSettings">
+    <option name="entityNameTemplate" />
+    <option name="isLombokAllArgsConstructor" value="true" />
+    <option name="isLombokNoArgsConstructor" value="true" />
+    <option name="scaffoldingLanguage" />
+  </component>
+</project>

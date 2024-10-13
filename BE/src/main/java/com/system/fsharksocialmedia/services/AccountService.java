@@ -6,13 +6,21 @@ import com.system.fsharksocialmedia.dtos.ImageDto;
 import com.system.fsharksocialmedia.entities.Image;
 import com.system.fsharksocialmedia.entities.User;
 import com.system.fsharksocialmedia.entities.Userrole;
+import com.system.fsharksocialmedia.exceptions.IdNotFoundException;
 import com.system.fsharksocialmedia.models.UserModel;
 import com.system.fsharksocialmedia.repositories.UserRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 
 @Service
@@ -20,6 +28,8 @@ public class AccountService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     public UserDto convertToDto(User user) {
         if (user == null) return null;
@@ -108,13 +118,16 @@ public class AccountService {
             throw new RuntimeException("Error retrieving user list: " + e.getMessage());
         }
     }
-//    public void updateAccountStatus(String username, UserModel userModel) {
-//        User user = userRepository.findById(username)
-//                .orElseThrow(() -> new UserNotFoundException(username));
-//        user.setActive(active);
-//        userDAO.save(user);
-//        messagingTemplate.convertAndSend("/topic/account-status", convertToDTO(user));
-//    }
+
+    public UserDto updateAccount(String username, UserModel userModel) {
+        User user = userRepository.findById(username).orElseThrow(() -> new RuntimeException("Looix"));
+        user.setActive(userModel.getActive());
+        User saveAccount = userRepository.save(user);
+        return convertToDto(saveAccount);
+
+    }
+
+
     // Delete a user by their ID
     public void deleteUser(String userId) {
         if (!userRepository.existsById(userId)) {

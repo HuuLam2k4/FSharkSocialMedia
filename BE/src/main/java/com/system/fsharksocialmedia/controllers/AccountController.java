@@ -1,6 +1,7 @@
 package com.system.fsharksocialmedia.controllers;
 
 import com.system.fsharksocialmedia.dtos.UserDto;
+import com.system.fsharksocialmedia.models.UserModel;
 import com.system.fsharksocialmedia.repositories.UserRepository;
 import com.system.fsharksocialmedia.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ public class AccountController {
     @Autowired
     private UserRepository userRepository;
 
+
     @GetMapping
     public ResponseEntity<Page<UserDto>> getAccounts(
             @RequestParam(name = "page", required = false, defaultValue = "0") int page,
@@ -29,8 +31,11 @@ public class AccountController {
         return ResponseEntity.ok(accounts);
     }
 
+    @PutMapping("/{username}")
+    public ResponseEntity<UserDto> updateAccount(@PathVariable String username, @RequestBody UserModel userModel) {
+        return ResponseEntity.ok(accountService.updateAccount(username, userModel));
+    }
 
-//
 //    @DeleteMapping("/{username}")
 //    public ResponseEntity<Void> deleteAccount(@PathVariable String username) {
 //        if (userRepository.existsById(username)) {

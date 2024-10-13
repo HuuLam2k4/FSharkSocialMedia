@@ -58,19 +58,6 @@ public class PostService {
         }
     }
 
-    public PostDto updatePost(int postId, PostDto postDto) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new RuntimeException("Post not found with ID: " + postId));
-        try {
-
-            post.setContent(postDto.getContent());
-            post.setCreatedate(postDto.getCreatedate());
-            Post updatedPost = postRepository.save(post);
-            return convertToDto(updatedPost);
-        } catch (Exception e) {
-            throw new RuntimeException("Error updating post: " + e.getMessage());
-        }
-    }
 
     // Delete a post by its ID
     public void deletePost(int postId) {

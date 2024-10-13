@@ -29,11 +29,7 @@ public class AccountController {
         return ResponseEntity.ok(accounts);
     }
 
-//    @PutMapping("/{username}")
-//    public ResponseEntity<Void> updateAccountStatus(@PathVariable String username, @RequestBody Map<String, Boolean> status) {
-//        accountService.updateAccountStatus(username, status.get("active"));
-//        return ResponseEntity.ok().build();
-//    }
+
 //
 //    @DeleteMapping("/{username}")
 //    public ResponseEntity<Void> deleteAccount(@PathVariable String username) {

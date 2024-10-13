@@ -6,6 +6,7 @@ import com.system.fsharksocialmedia.dtos.ImageDto;
 import com.system.fsharksocialmedia.entities.Image;
 import com.system.fsharksocialmedia.entities.User;
 import com.system.fsharksocialmedia.entities.Userrole;
+import com.system.fsharksocialmedia.models.UserModel;
 import com.system.fsharksocialmedia.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -95,6 +96,7 @@ public class AccountService {
         image.setImage(dto.getImage());
         return image;
     }
+
     public Page<UserDto> getUsers(int page, int size, String search) {
         try {
             Pageable pageable = PageRequest.of(page, size);
@@ -106,8 +108,7 @@ public class AccountService {
             throw new RuntimeException("Error retrieving user list: " + e.getMessage());
         }
     }
-
-//    public void updateAccountStatus(String username, Boolean active) {
+//    public void updateAccountStatus(String username, UserModel userModel) {
 //        User user = userRepository.findById(username)
 //                .orElseThrow(() -> new UserNotFoundException(username));
 //        user.setActive(active);

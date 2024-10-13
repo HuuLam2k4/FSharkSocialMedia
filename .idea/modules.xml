@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/FSharkSocialMedia.iml" filepath="$PROJECT_DIR$/.idea/FSharkSocialMedia.iml" />
+      <module fileurl="file://$PROJECT_DIR$/BE/FSharkSocialMedia.iml" filepath="$PROJECT_DIR$/BE/FSharkSocialMedia.iml" />
     </modules>
   </component>
 </project>

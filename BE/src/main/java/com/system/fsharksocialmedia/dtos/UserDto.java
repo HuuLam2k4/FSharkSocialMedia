@@ -1,15 +1,13 @@
 package com.system.fsharksocialmedia.dtos;
 
 import jakarta.validation.constraints.Size;
+import lombok.Data;
 import lombok.Value;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 
-/**
- * DTO for {@link com.system.fsharksocialmedia.entities.User}
- */
-@Value
+@Data
 public class UserDto implements Serializable {
     @Size(max = 200)
     String username;

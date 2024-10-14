@@ -1,28 +1,6 @@
 var app = angular.module("myApp", ["ngRoute"]);
 var API = "http://localhost:8080/api/";
-app.config(function ($routeProvider) {
-  $routeProvider
-    .when("/", {
-      templateUrl: "dashboard.html",
-      controller: "dashboardCtrl",
-    })
-    .when("/dashboard", {
-      templateUrl: "dashboard.html",
-      controller: "dashboardCtrl",
-    })
-    .when("/account", {
-      templateUrl: "account.html",
-      controller: "accountCtrl",
-    })
-    .when("/content", {
-      templateUrl: "contenpost.html",
-      controller: "contentPostCtrl",
-    })
-    .when("/profile/:username", {
-      templateUrl: "app-profile.html",
-      controller: "profileCtrl",
-    });
-});
+
 app.controller("accountCtrl", function ($scope, $http) {
   var socket = new SockJS("http://localhost:8080/ws");
   var stompClient = Stomp.over(socket);

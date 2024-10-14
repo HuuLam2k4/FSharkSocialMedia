@@ -1,14 +1,12 @@
-package com.system.fsharksocialmedia.dtos;
+package com.system.fsharksocialmedia.models;
 
+import com.system.fsharksocialmedia.dtos.ImageDto;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import lombok.Value;
 
-import java.io.Serializable;
 import java.time.Instant;
-
 @Data
-public class ConversationDto implements Serializable {
+public class ConversationModel {
     Integer id;
     @Size(max = 300)
     String name;

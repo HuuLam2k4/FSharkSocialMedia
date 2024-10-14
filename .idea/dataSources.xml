@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="FSharkSocialMedia" uuid="3789137b-662b-431a-a08e-8db2022d362a">
+    <data-source source="LOCAL" name="FSharkSocialMedia" uuid="a8dc2b39-6913-4712-aad2-ce9a103ac89e">
       <driver-ref>sqlserver.ms</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</jdbc-driver>

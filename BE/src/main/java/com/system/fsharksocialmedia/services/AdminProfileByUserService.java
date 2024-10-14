@@ -1,34 +1,21 @@
 package com.system.fsharksocialmedia.services;
 
+import com.system.fsharksocialmedia.dtos.ImageDto;
 import com.system.fsharksocialmedia.dtos.UserDto;
 import com.system.fsharksocialmedia.dtos.UserroleDto;
-import com.system.fsharksocialmedia.dtos.ImageDto;
 import com.system.fsharksocialmedia.entities.Image;
 import com.system.fsharksocialmedia.entities.User;
 import com.system.fsharksocialmedia.entities.Userrole;
-import com.system.fsharksocialmedia.exceptions.IdNotFoundException;
 import com.system.fsharksocialmedia.exceptions.UserNotFoundException;
-import com.system.fsharksocialmedia.models.UserModel;
 import com.system.fsharksocialmedia.repositories.UserRepository;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
 
 @Service
-public class AccountService {
-
+public class AdminProfileByUserService {
     @Autowired
-    private UserRepository userRepository;
+    UserRepository userRepository;
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
@@ -107,33 +94,9 @@ public class AccountService {
         return image;
     }
 
-    public Page<UserDto> getUsers(int page, int size, String search) {
-        try {
-            Pageable pageable = PageRequest.of(page, size);
-            Page<User> users = (search == null || search.isEmpty())
-                    ? userRepository.findAll(pageable)
-                    : userRepository.findByUsernameContainingIgnoreCase(search, pageable);
-            return users.map(this::convertToDto);
-        } catch (Exception e) {
-            throw new RuntimeException("Error retrieving user list: " + e.getMessage());
-        }
-    }
-
-    public UserDto updateAccount(String username, UserModel userModel) {
-        User user = userRepository.findById(username).orElseThrow(() -> new UserNotFoundException(("Không tìm thấy username: " + username)));
-        user.setActive(userModel.getActive());
-        User saveAccount = userRepository.save(user);
-        messagingTemplate.convertAndSend("/topic/account-status", convertToDto(user));
-        return convertToDto(saveAccount);
-
-    }
-
-
-    // Delete a user by their ID
-    public void deleteUser(String username) {
-        if (!userRepository.existsById(username)) {
-            throw new UserNotFoundException("Không tìm thấy username: " + username);
-        }
-        userRepository.deleteById(username);
+    public UserDto getByUsername(String username) {
+        if (username == null) return null;
+        User user = userRepository.findById(username).orElseThrow(() -> new UserNotFoundException("Không tìm thấy username: " + username));
+        return convertToDto(user);
     }
 }

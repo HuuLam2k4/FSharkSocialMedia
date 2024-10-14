@@ -2,7 +2,6 @@ package com.system.fsharksocialmedia.models;
 
 import com.system.fsharksocialmedia.dtos.ImageDto;
 import com.system.fsharksocialmedia.dtos.UserroleDto;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.time.LocalDate;

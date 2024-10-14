@@ -36,16 +36,15 @@ public class AccountController {
         return ResponseEntity.ok(accountService.updateAccount(username, userModel));
     }
 
-//    @DeleteMapping("/{username}")
-//    public ResponseEntity<Void> deleteAccount(@PathVariable String username) {
-//        if (userRepository.existsById(username)) {
-//            accountService.deleteAccount(username);
-//            return ResponseEntity.ok().build();
-//        } else {
-//            return ResponseEntity.notFound().build();
-//        }
-//
-//    }
+    @DeleteMapping("/{username}")
+    public ResponseEntity<?> deleteAccount(@PathVariable String username) {
+        if (userRepository.existsById(username)) {
+            accountService.deleteUser(username);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
 }
 

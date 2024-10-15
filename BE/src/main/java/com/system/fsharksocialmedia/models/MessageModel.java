@@ -1,16 +1,22 @@
 package com.system.fsharksocialmedia.models;
 
-import com.system.fsharksocialmedia.dtos.ConversationDto;
-import com.system.fsharksocialmedia.dtos.UserDto;
-import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.Instant;
+
 @Data
+@Builder
 public class MessageModel {
-    Integer id;
-    ConversationDto conversation;
-    UserDto usersrc;
+    MessageType type;
+    String sender;
+    String recipient;
     String content;
-    Instant createdate;
+    Instant time;
+
+    public enum MessageType {
+        CHAT,
+        JOIN,
+        LEAVE
+    }
 }

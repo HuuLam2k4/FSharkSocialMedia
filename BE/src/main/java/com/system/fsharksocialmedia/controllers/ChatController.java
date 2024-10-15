@@ -1,44 +1,47 @@
 package com.system.fsharksocialmedia.controllers;
 
-import com.system.fsharksocialmedia.dtos.ConversationDto;
-import com.system.fsharksocialmedia.dtos.MessageDto;
-import com.system.fsharksocialmedia.models.ConversationModel;
 import com.system.fsharksocialmedia.models.MessageModel;
 import com.system.fsharksocialmedia.services.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.stereotype.Controller;
 
-import java.util.List;
-
-@RestController
-@RequestMapping("/api/chat")
+@Controller
 public class ChatController {
     @Autowired
     private ChatService chatService;
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
 
-    // Gửi tin nhắn
-    @PostMapping("/messages")
-    public ResponseEntity<MessageDto> sendMessage(@RequestBody MessageModel messageModel) {
-        MessageDto sentMessage = chatService.sendMessage(messageModel);
-        messagingTemplate.convertAndSend("/topic/messages", sentMessage);
-        return ResponseEntity.ok(sentMessage);
+    //    @MessageMapping("/chat.sendMessage")
+//    @SendTo("/topic/public")
+//    public MessageModel sendMessage(
+//            @Payload MessageModel chatMessage) {
+//        return chatMessage;
+//    }
+//    @MessageMapping("/chat.addUser")
+//    @SendTo("/topic/public")
+//    public MessageModel addUser(
+//            @Payload MessageModel chatMessage,
+//            SimpMessageHeaderAccessor headerAccessor
+//    ) {
+//        headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
+//        return chatMessage;
+//    }
+    @MessageMapping("/chat.sendMessage")
+    @SendTo("/topic/public")
+    public MessageModel sendMessage(@Payload MessageModel chatMessage) {
+        // Lưu tin nhắn vào cơ sở dữ liệu thông qua service
+        chatService.saveMessage(chatMessage);
+        return chatMessage;
     }
 
-    // Lấy tin nhắn theo ID cuộc trò chuyện
-    @GetMapping("/conversations/{conversationId}/messages")
-    public ResponseEntity<List<MessageDto>> getMessagesByConversationId(@PathVariable Integer conversationId) {
-        List<MessageDto> messages = chatService.getMessagesByConversationId(conversationId);
-        return ResponseEntity.ok(messages);
-    }
-
-    // Tạo cuộc trò chuyện
-    @PostMapping("/conversations")
-    public ResponseEntity<ConversationDto> createConversation(@RequestBody ConversationModel conversationModel) {
-        ConversationDto createdConversation = chatService.createConversation(conversationModel);
-        return ResponseEntity.ok(createdConversation);
+    // Thêm người dùng vào chat
+    @MessageMapping("/chat.addUser")
+    @SendTo("/topic/public")
+    public MessageModel addUser(@Payload MessageModel chatMessage, SimpMessageHeaderAccessor headerAccessor) {
+        headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
+        return chatMessage;
     }
 }

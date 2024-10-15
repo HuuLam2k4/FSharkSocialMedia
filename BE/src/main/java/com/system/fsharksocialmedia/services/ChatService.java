@@ -2,16 +2,19 @@ package com.system.fsharksocialmedia.services;
 
 import com.system.fsharksocialmedia.dtos.*;
 import com.system.fsharksocialmedia.entities.*;
-import com.system.fsharksocialmedia.models.ConversationModel;
 import com.system.fsharksocialmedia.models.MessageModel;
 import com.system.fsharksocialmedia.repositories.MessageRepository;
 import com.system.fsharksocialmedia.repositories.ConversationRepository;
 import com.system.fsharksocialmedia.repositories.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,58 +31,80 @@ public class ChatService {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
-    // Gửi tin nhắn
-    public MessageDto sendMessage(MessageModel messageModel) {
-        Message message = new Message();
+        public MessageDto saveMessage(MessageModel messageModel) {
+        User user = userRepository.findByUsername(messageModel.getSender())
+                .orElseThrow(() -> new RuntimeException("User does not exist: " + messageModel.getSender()));
+               Message message = new Message();
+        message.setUsersrc(user);
         message.setContent(messageModel.getContent());
-        Message savedMessage = messageRepository.save(message);
-        messagingTemplate.convertAndSend("/topic/messages", savedMessage);
-        return convertMessageToDto(savedMessage);
+        message.setCreatedate(Instant.now());
+        try {
+            Message savedMessage = messageRepository.save(message);
+            messagingTemplate.convertAndSend("/topic/messages", convertMessageToDto(savedMessage));
+            return convertMessageToDto(savedMessage);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to save the message", e);
+        }
     }
 
+// Gửi tin nhắn
+    public Message sendMessage(Integer conversationId, String senderId, String content) {
+        Conversation conversation = conversationRepository.findById(conversationId)
+                .orElseThrow(() -> new EntityNotFoundException("Conversation not found with id: " + conversationId));
+        User sender = userRepository.findById(senderId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + senderId));
 
-    // Lấy tin nhắn theo ID cuộc trò chuyện
-    public List<MessageDto> getMessagesByConversationId(Integer conversationId) {
-        List<Message> messages = messageRepository.findByConversationId(conversationId);
-        return messages.stream()
-                .map(this::convertMessageToDto)
-                .collect(Collectors.toList());
+        Message message = new Message();
+        message.setConversation(conversation);
+        message.setUsersrc(sender);
+        message.setContent(content);
+        message.setCreatedate(Instant.now());
+        return messageRepository.save(message);
     }
 
-    // Tạo cuộc trò chuyện
-    public ConversationDto createConversation(ConversationModel conversationModel) {
-        Conversation conversation = new Conversation();
-        conversation.setName(conversationModel.getName());
-//        // Thiết lập avatar nếu cần
-//        if (conversationDto.getAvatar() != null) {
-//            conversation.setAvatar(convertImageDtoToEntity(conversationDto.getAvatar()));
-//        }
-        conversation = conversationRepository.save(conversation);
-        return convertConversationToDto(conversation);
+    // Lấy tất cả tin nhắn trong cuộc trò chuyện
+    public List<Message> getMessagesByConversation(Integer conversationId) {
+        Conversation conversation = conversationRepository.findById(conversationId)
+                .orElseThrow(() -> new EntityNotFoundException("Conversation not found with id: " + conversationId));
+
+        return messageRepository.findByConversation(conversation);
+    }
+
+    // Lấy tất cả tin nhắn được gửi bởi một người dùng
+    public List<Message> getMessagesByUser(String username) {
+        User user = userRepository.findById(username)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + username));
+
+        return messageRepository.findByUsersrc(user);
+    }
+
+    // Xóa tin nhắn theo ID
+    public boolean deleteMessage(Integer messageId) {
+        Message message = messageRepository.findById(messageId)
+                .orElseThrow(() -> new EntityNotFoundException("Message not found with id: " + messageId));
+
+        messageRepository.delete(message);
+        return true;
     }
 
 
     // Chuyển đổi từ Message sang MessageDto
     public MessageDto convertMessageToDto(Message message) {
         if (message == null) return null;
-
         MessageDto dto = new MessageDto();
         dto.setId(message.getId());
         dto.setContent(message.getContent());
         dto.setCreatedate(message.getCreatedate());
-
         // Chuyển đổi userSrc
         if (message.getUsersrc() != null) {
             UserDto userDto = convertUserToDto(message.getUsersrc());
             dto.setUsersrc(userDto);
         }
-
         // Chuyển đổi conversation
         if (message.getConversation() != null) {
             ConversationDto conversationDto = convertConversationToDto(message.getConversation());
             dto.setConversation(conversationDto);
         }
-
         return dto;
     }
 

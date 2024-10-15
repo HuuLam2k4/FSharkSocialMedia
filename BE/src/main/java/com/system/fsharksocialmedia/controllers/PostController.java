@@ -1,6 +1,8 @@
 package com.system.fsharksocialmedia.controllers;
 
 import com.system.fsharksocialmedia.dtos.PostDto;
+import com.system.fsharksocialmedia.entities.Post;
+import com.system.fsharksocialmedia.models.PostModel;
 import com.system.fsharksocialmedia.services.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,7 +13,7 @@ import java.util.List;
 
 //Code mẫu
 @RestController
-@CrossOrigin(origins = "http://127.0.0.1:5500")
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/content")
 public class PostController {
     @Autowired
@@ -26,5 +28,12 @@ public class PostController {
         Page<PostDto> posts = postService.getPost(page, size, search);
         return ResponseEntity.ok(posts);
     }
+
+//    @PostMapping
+//    public ResponseEntity<PostDto> addPost(@RequestBody PostModel model) {
+//        System.out.println("Model: " + model);
+//        return ResponseEntity.ok(postService.savePosition(model));
+//    }
+
 
 }

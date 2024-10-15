@@ -2,6 +2,7 @@ package com.system.fsharksocialmedia.services;
 
 import com.system.fsharksocialmedia.dtos.PostDto;
 import com.system.fsharksocialmedia.entities.Post;
+import com.system.fsharksocialmedia.models.PostModel;
 import com.system.fsharksocialmedia.repositories.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,6 +47,17 @@ public class PostService {
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
+
+//    public PostDto savePosition(PostModel model) {
+//        System.out.println("Model Service: "+model);
+//        if (model == null) return null;
+//        Post post = new Post();
+//        post.setUsername(null);
+//        post.setContent(model.getContent());
+//        post.setCreatedate(new Date().toInstant());
+//        Post savePost = postRepository.save(post);
+//        return convertToDto(savePost);
+//    }
 
     public Page<PostDto> getPost(int page, int size, String search) {
         try {

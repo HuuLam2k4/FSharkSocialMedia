@@ -20,6 +20,6 @@ public class UserModel {
     String bio;
     String hometown;
     String currency;
-    ImageDto avatar;
-    ImageDto cover;
+
+    String message;
 }

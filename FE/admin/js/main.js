@@ -1,6 +1,24 @@
 var app = angular.module("myApp", ["ngRoute"]);
 var API = "http://localhost:8080/api/";
-
+app.config(function ($routeProvider) {
+  $routeProvider
+    .when("/", {
+      templateUrl: "assets/dashboard.html",
+      controller: "dashboardCtrl",
+    })
+    .when("/account", {
+      templateUrl: "assets/account.html",
+      controller: "accountCtrl",
+    })
+    .when("/content", {
+      templateUrl: "assets/contentpost.html",
+      controller: "contentPostCtrl",
+    })
+    .when("/profile/:username", {
+      templateUrl: "assets/profile.html",
+      controller: "profileCtrl",
+    });
+});
 app.controller("accountCtrl", function ($scope, $http) {
   var socket = new SockJS("http://localhost:8080/ws");
   var stompClient = Stomp.over(socket);
@@ -13,7 +31,6 @@ app.controller("accountCtrl", function ($scope, $http) {
   $scope.selectedAccount = null;
   $scope.statusText = "";
   $scope.username = "";
-
   $scope.fetchAccounts = function (keyword, page) {
     if (isNaN(page) || page < 1) {
       page = 1;
@@ -276,9 +293,9 @@ app.controller("profileCtrl", function ($scope, $http, $routeParams) {
     );
   };
 
-  // const username = $routeParams.username;
-  // if (username) {
-  $scope.fetchUserByUsername("thuan");
-  // console.log($routeParams.username);
-  // }
+  const username = $routeParams.username;
+  if (username) {
+    $scope.fetchUserByUsername(username);
+    console.log($routeParams.username);
+  }
 });

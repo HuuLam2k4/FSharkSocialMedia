@@ -13,7 +13,7 @@ import java.util.List;
 
 //Code mẫu
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://127.0.0.1:5500")
 @RequestMapping("/api/content")
 public class PostController {
     @Autowired
@@ -28,12 +28,5 @@ public class PostController {
         Page<PostDto> posts = postService.getPost(page, size, search);
         return ResponseEntity.ok(posts);
     }
-
-//    @PostMapping
-//    public ResponseEntity<PostDto> addPost(@RequestBody PostModel model) {
-//        System.out.println("Model: " + model);
-//        return ResponseEntity.ok(postService.savePosition(model));
-//    }
-
 
 }

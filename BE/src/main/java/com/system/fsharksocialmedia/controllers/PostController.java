@@ -28,5 +28,4 @@ public class PostController {
         Page<PostDto> posts = postService.getPost(page, size, search);
         return ResponseEntity.ok(posts);
     }
-
 }
